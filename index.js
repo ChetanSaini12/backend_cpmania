@@ -1,22 +1,49 @@
-const express = require('express');
+const express = require("express");
 const app = express();
 const router = express.Router();
-const cors = require('cors');
+const cors = require("cors");
+const auth = require("./routes/auth");
+const mongoose = require("mongoose");
+app.use(express.json());
 
-const contestRouter = require('./routes/schedule');
-const ratingRouter = require('./routes/rating');
 
-router.use('/schedule', contestRouter);
-router.use('/rating/', ratingRouter);
+const contestRouter = require("./routes/schedule");
+const ratingRouter = require("./routes/rating");
 
-router.get('/', (req, res) => {
-    res.send('Hello World!');
+router.use("/schedule", contestRouter);
+router.use("/rating", ratingRouter);
+router.use("/auth", auth);
+router.get("/", (req, res) => {
+  res.send("Hello World!");
 });
-
+router.post("/test", (req, res) => {
+  console.log("test");
+  console.log(req.body);
+  res.send("Heelloo" + JSON.stringify(req.body));
+});
 app.use(cors({ origin: true, credentials: true }));
+app.use("/", router);
+// app.listen(7000, () => {
+//   console.log("Server is running on port http://localhost:7000");
+// });
 
-app.use('/', router);
+const mongoDB = "mongodb+srv://chetansaini1241:chetanMONGODB12@initialcluster.k3w73hx.mongodb.net/Students";
 
-app.listen(7000, () => {
-    console.log('Server is running on port 7000');
-});
+const PORT = process.env.PORT || 7000;
+const MONGO_URI =
+  process.env.MONGO_URI || mongoDB;
+
+mongoose
+  .connect(MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => {
+    console.log("Connected to database");
+    app.listen(PORT, () => {
+      console.log(`Server is http://localhost:${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.log(err);
+  });

@@ -19,7 +19,7 @@ const atcoderContest = async (req, res) => {
   contests.each((index, element) => {
     const curr = cheerio.load(element);
     const name = pretty(curr("td:nth-child(2) a").html());
-    // const slug = "https://atcoder.jp/" + pretty((curr("td:nth-child(2) a").attr('href')))
+    const slug = "https://atcoder.jp/" + pretty((curr("td:nth-child(2) a").attr('href')))
     const Stime = parseInt(
       Date.parse(pretty(curr("td:nth-child(1) a time").html()))
     ); //from 2023-01-28(Sat) 08:30 to timestamp
@@ -75,7 +75,7 @@ const codechefContest = async (req, res) => {
           // contestStartUTC will be a JavaScript Date object representing the contest start time in UTC timezone
           //new Date(contestStart.getTime() + contestStart.getTimezoneOffset() * 60 )
           const obj = {
-            // slug: 'https://www.codechef.com/' + curr.contest_code,
+            slug: 'https://www.codechef.com/' + curr.contest_code,
             name: curr.contest_name,
             start_time: contestStartUTC,
             end_time: contestEndUTC,
@@ -90,7 +90,7 @@ const codechefContest = async (req, res) => {
         const curr = futureContest[i];
 
         const obj = {
-          // slug: 'https://www.codechef.com/' + curr.contest_code,
+          slug: 'https://www.codechef.com/' + curr.contest_code,
           name: curr.contest_name,
           start_time: Date.parse(curr.contest_start_date_iso),
           end_time: Date.parse(curr.contest_end_date_iso),
@@ -130,7 +130,7 @@ const codeforcesContest = async (req, res) => {
                 if (curr.phase == "BEFORE"||curr.phase=="CODING")
                 {
                     const obj = {
-                        slug: curr.id,
+                        slug: 'https://codeforces.com/contests',
                         name: curr.name,
                         start_time: (curr.startTimeSeconds)*1000,
                         end_time: (curr.startTimeSeconds + curr.durationSeconds)*1000 ,

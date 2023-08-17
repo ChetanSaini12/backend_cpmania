@@ -70,9 +70,9 @@ router.post("/signup", async (req, res) => {
 
     const savedUser = await user.save();
 
-    const token = jwt.sign({ _id: savedUser._id });
+    // const token = jwt.sign({ _id: savedUser._id });
 
-    res.status(201).send({ message: "Successfully Signed Up", token: token });
+    // res.status(201).send({ message: "Successfully Signed Up", token: token });
     res.status(201).send({ message: "Successfully Signed Up" , success: true });
   } catch (err) {
     console.log("Error: " + err); 
@@ -85,5 +85,40 @@ router.post("/signup", async (req, res) => {
     res.status(400).send({message: error, success: false});
   }
 });
+
+router.post("/login", async (req, res) => {
+
+  try {
+    const { username, password } = req.body;
+
+    if (!username || !password) {
+      return res.status(422).send({ message: "Please fill all the fields", success: false });
+    }
+
+    const user = await userSchema.findOne({ username: username });
+
+    if (!user) {
+      return res.status(400).send({ message: "Invalid Username", success: false });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      return res.status(400).send({ message: "Invalid Password", success: false });
+    }
+
+    // const token = jwt.sign({ _id: user._id }, process.env.SECRET_KEY);
+
+    // res.status(200).send({ message: "Successfully Signed In", token: token, success: true });
+    res.status(200).send({ message: "Successfully Signed In", success: true });
+
+  }
+  catch (err) {
+    console.log("Error: " + err);
+    res.status(400).send({ message: "SignIn Failed", success: false });
+  }
+
+});
+
 
 module.exports = router;

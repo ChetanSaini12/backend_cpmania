@@ -2,7 +2,6 @@ const express = require("express");
 const app = express();
 const router = express.Router();
 const cors = require("cors");
-const auth = require("./routes/auth");
 const mongoose = require("mongoose");
 app.use(express.json());
 const dotenv = require("dotenv");
@@ -10,12 +9,15 @@ dotenv.config(path = "./.env");
 
 
 
+const auth = require("./routes/auth");
+const profile = require("./routes/profile");
 const contestRouter = require("./routes/schedule");
 const ratingRouter = require("./routes/rating");
 
 router.use("/schedule", contestRouter);
 router.use("/rating", ratingRouter);
 router.use("/auth", auth);
+router.use("/profile", profile);
 router.get("/", (req, res) => {
   res.send("Hello World!");
 });

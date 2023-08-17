@@ -110,8 +110,10 @@ const codeforcesRating = async (req, res) => {
 
 };
 
+/*<---- CodeChef Rating --->*/
 
 const codechefRating = async (req, res) => {
+
     const username = req.params.username
     const data = {
         rating: 0,
@@ -122,13 +124,14 @@ const codechefRating = async (req, res) => {
         globalRank: 0,
         countryRank: 0
     }
+
     try{
         const url = codechefUrl+username;
         const result = await axios.get(url);
         const $ = cheerio.load(result.data);
-        // const ratingDiv = $(".rating-number")
+
         const ratingDiv = $("body > main > div > div > div > aside > div:nth-child(1) > div > div.rating-header.text-center > div.rating-number")
-        const highest_ratingDiv=$("body > main > div > div > div > aside > div:nth-child(1) > div > div.rating-header.text-center > small")
+        const highest_ratingDiv = $("body > main > div > div > div > aside > div:nth-child(1) > div > div.rating-header.text-center > small")
         const countryRank = $("body > main > div > div > div > aside > div:nth-child(1) > div > div.rating-ranks > ul > li:nth-child(2) > a > strong")
         const globalRank = $("body > main > div > div > div > aside > div:nth-child(1) > div > div.rating-ranks > ul > li:nth-child(1) > a > strong")
         const problemsSolved = $("body > main > div > div > div > div > div > section:nth-child(7) > div > h5:nth-child(1)")
@@ -141,38 +144,39 @@ const codechefRating = async (req, res) => {
         const problems_solved = parseInt(pretty(problemsSolved.html()).split("(")[1].split(")")[0]);
         const contest = parseInt(pretty(contests.text()));
         
-        let star=1;
-        if (rating >= 1400&&rating<1600)
+        let star = 1;
+        if (rating >= 1400 && rating<1600)
         {
-            star=2
+            star = 2
         }
-        else if (rating >= 1600&&rating<1800)
+        else if (rating >= 1600 && rating<1800)
         {
-            star=3
+            star = 3
         }
-        else if (rating >= 1800&&rating<2000)
+        else if (rating >= 1800 && rating<2000)
         {
-            star=4
+            star = 4
         }
-        else if (rating >= 2000&&rating<2200)
+        else if (rating >= 2000 && rating<2200)
         {
-            star=5
+            star = 5
         }
-        else if (rating >= 2200&&rating<2500)
+        else if (rating >= 2200 && rating<2500)
         {
-            star=6
+            star = 6
         }
         else if (rating >= 2500)
         {
-            star=7
+            star = 7
         }
-        data.rating=rating;
-        data.stars=star;
-        data.highest_rating=highest_rating;
-        data.countryRank=country_rank;
-        data.globalRank=global_rank;
-        data.problemsSolved=problems_solved;
-        data.contest=contest;
+
+        data.rating = rating;
+        data.stars = star;
+        data.highest_rating = highest_rating;
+        data.countryRank = country_rank;
+        data.globalRank = global_rank;
+        data.problemsSolved = problems_solved;
+        data.contest = contest;
         res.status(200).json({
             status: "success",
             data: data,
@@ -188,17 +192,40 @@ const codechefRating = async (req, res) => {
 }
 
 
+/*<---- Atcoder Rating --->*/
+
 const atcoderRating = async (req, res) => {
+
     const username = req.params.username
+    const data = {
+        rank : 0,
+        rating : 0,
+        highest_rating : 0,
+        matches : 0
+    }
     try{
         const url = atcoderUrl + username;
         const result = await axios.get(url);
         const $ = cheerio.load(result.data);
-        const ratingDiv = $(".dl-table tr:nth-child(2) td:nth-child(2)")
-        const rating = parseInt(pretty(ratingDiv.html()));
+
+        const rankDiv = $("#main-container > div.row > div.col-md-9.col-sm-12 > table > tbody > tr:nth-child(1) > td")
+        const ratingDiv = $("#main-container > div.row > div.col-md-9.col-sm-12 > table > tbody > tr:nth-child(2) > td > span")
+        const highestRatDiv = $("#main-container > div.row > div.col-md-9.col-sm-12 > table > tbody > tr:nth-child(3) > td > span")
+        const matchesDiv = $("#main-container > div.row > div.col-md-9.col-sm-12 > table > tbody > tr:nth-child(4) > td")
+
+        const rank = parseInt(pretty(rankDiv.text()));
+        const rating = parseInt(pretty(ratingDiv.text()));
+        const highest_rating = parseInt(pretty(highestRatDiv.text()));
+        const matches = parseInt(pretty(matchesDiv.text()));
+
+        data.rank = rank
+        data.rating = rating
+        data.highest_rating = highest_rating
+        data.matches = matches        
+
         res.status(200).json({
             status: "success",
-            rating: rating,
+            data : data
         })
     }
     catch (err)
@@ -210,9 +237,11 @@ const atcoderRating = async (req, res) => {
     }
 }
 
-const leetcodeRating = async (req, res) => {
-    const username = req.params.username
+/*<---- LeetCode Rating --->*/
 
+const leetcodeRating = async (req, res) => {
+
+    const username = req.params.username
     const data = {
         rating: 0,
         problemsSolved: 0,
@@ -220,14 +249,11 @@ const leetcodeRating = async (req, res) => {
         medium: 0,
         hard: 0,
         level: "",
-        contributionPoints: 0,
         globalRank: 0,
         maxStreak: "",
         contests: 0,
         submissions: 0
     }
-
-
 
     try{
         const url = leetcodeUrl + username;
@@ -254,7 +280,7 @@ const leetcodeRating = async (req, res) => {
         const contestValue = (pretty(contest.html()));
         const maxStreakValue = (pretty(maxStreak.html()));
         const submissionsValue = (pretty(submissions.html()));
-        const globalRankValue = (pretty(globalRank.html()));
+        const globalRankValue = (pretty(globalRank.html())).split()[0].split("<")[0];
 
         data.problemsSolved = totalProblems;
         data.easy = easyCount;
@@ -283,3 +309,72 @@ const leetcodeRating = async (req, res) => {
 }
 
 module.exports = { codechefRating, codeforcesRating, atcoderRating, leetcodeRating }
+
+
+
+/*
+Atcoder - http://localhost:7000/rating/at_coder/chetan_saini12
+{
+    "status": "success",
+    "data": {
+        "rank": 64033,
+        "rating": 40,
+        "highest_rating": 40,
+        "matches": 5
+    }
+}
+
+Leetcode - http://localhost:7000/rating/leet_code/chetan_saini21
+{
+    "status": "success",
+    "data": {
+        "rating": "2,194",
+        "problemsSolved": 272,
+        "easy": 91,
+        "medium": 144,
+        "hard": 37,
+        "level": "Guardian",
+        "globalRank": "4,575",
+        "maxStreak": "16",
+        "contests": "35",
+        "submissions": "504"
+    }
+}
+
+codechef - http://localhost:7000/rating/code_chef/chetan_saini21
+{
+    "status": "success",
+    "data": {
+        "rating": 2043,
+        "stars": 5,
+        "highest_rating": 2062,
+        "contest": 56,
+        "problemsSolved": 202,
+        "globalRank": 1101,
+        "countryRank": 557
+    }
+}
+
+codeforces - http://localhost:7000/rating/codeforces/chetan_saini
+{
+    "success": true,
+    "data": {
+        "handle": "chetan_saini",
+        "rating": 1645,
+        "maxRating": 1773,
+        "rank": "expert",
+        "maxRank": "expert",
+        "problemsSolved": 1056,
+        "problemsTried": 1108,
+        "contestCount": 124,
+        "bestRank": 184,
+        "worstRank": 15448,
+        "MaxUp": 116,
+        "MaxDown": 352
+    }
+}
+
+
+
+
+*/

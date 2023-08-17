@@ -8,6 +8,7 @@ router.get("/:username", async (req, res) => {
     const user = await userSchema.findOne({ username: username });
     if (user) {
         const data = {
+            username: user.username,
             name: user.name,
             email: user.email,
             profile_pic: user.profile_pic,

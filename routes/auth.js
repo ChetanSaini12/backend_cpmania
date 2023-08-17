@@ -5,6 +5,8 @@ const userSchema = require("../models/user");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
+
+
 router.post("/signup", async (req, res) => {
   console.log("Body" + req.body);
   try {
@@ -21,23 +23,23 @@ router.post("/signup", async (req, res) => {
     } = req.body;
 
     if (!name || !email || !password || !confirm_password || !username) {
-      return res.status(422).json({ error: "Please fill all the fields" });
+      return res.status(422).send({ message: "Please fill all the fields", success: false });
     }
 
     if (password !== confirm_password) {
       return res
         .status(422)
-        .json({ error: "Password and Confirm Password are not same" });
+        .send({ message: "Password and Confirm Password are not same" , success: false });
     }
 
     if (!email.includes("@") || !email.includes(".", email.indexOf("@"))) {
-      return res.status(422).json({ error: "Invalid Email" });
+      return res.status(422).send({ message: "Invalid Email", success: false });
     }
 
     if (password.length < 6) {
       return res
         .status(422)
-        .json({ error: "Password length must be atleast 6 characters" });
+        .send({ message: "Password length must be atleast 6 characters", success: false });
     }
 
     if (
@@ -46,7 +48,7 @@ router.post("/signup", async (req, res) => {
       username.includes("\n") ||
       username.includes("@")
     ) {
-      return res.status(422).json({ error: "Invalid Username" });
+      return res.status(422).send({ message: "Invalid Username", success: false });
     }
 
     const hashedPassword = await bcrypt.hash(
@@ -68,17 +70,19 @@ router.post("/signup", async (req, res) => {
 
     const savedUser = await user.save();
 
-    const token = jwt.sign({ _id: savedUser._id }, process.env.SECRET_KEY);
+    const token = jwt.sign({ _id: savedUser._id });
 
     res.status(201).send({ message: "Successfully Signed Up", token: token });
+    res.status(201).send({ message: "Successfully Signed Up" , success: true });
   } catch (err) {
+    console.log("Error: " + err); 
     let error = "Something went wrong";
     if (err.code === 11000) {
       key = Object.keys(err.keyValue)[0];
       error = `${key} already exists`;
     }
 
-    res.status(400).json({ error });
+    res.status(400).send({message: error, success: false});
   }
 });
 

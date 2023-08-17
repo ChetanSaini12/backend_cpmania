@@ -5,6 +5,9 @@ const cors = require("cors");
 const auth = require("./routes/auth");
 const mongoose = require("mongoose");
 app.use(express.json());
+const dotenv = require("dotenv");
+dotenv.config(path = "./.env");
+
 
 
 const contestRouter = require("./routes/schedule");
@@ -27,11 +30,9 @@ app.use("/", router);
 //   console.log("Server is running on port http://localhost:7000");
 // });
 
-const mongoDB = "mongodb+srv://chetansaini1241:chetanMONGODB12@initialcluster.k3w73hx.mongodb.net/Students";
 
 const PORT = process.env.PORT || 7000;
-const MONGO_URI =
-  process.env.MONGO_URI || mongoDB;
+const MONGO_URI = process.env.MONGO_STRING || 'mongodb+srv://chetansaini1241:chetanMONGODB12@initialcluster.k3w73hx.mongodb.net/Students?retryWrites=true&w=majority';
 
 mongoose
   .connect(MONGO_URI, {

@@ -33,7 +33,7 @@ const atcoderContest = async (req, res) => {
       //avoiding finished contest and practice contest
       const status = Date.now() > Stime ? "ongoing" : "upcoming";
       const obj = {
-        // slug: slug,
+        slug: slug,
         name: name,
         start_time: Stime,
         end_time: Etime,
@@ -168,11 +168,11 @@ const leetCodeContest = async (req, res) => {
       const name = curr.title;
       const Stime = curr.startTime * 1000;
       const Etime = Stime + curr.duration * 1000;
-      // const slug = 'https://leetcode.com/contest/' + curr.titleSlug
+      const slug = 'https://leetcode.com/contest/' + curr.titleSlug
       const duration = curr.duration;
       if (Etime > Date.now()) {
         const obj = {
-          // slug: slug,
+          slug: slug,
           name: name,
           start_time: Stime,
           end_time: Etime,

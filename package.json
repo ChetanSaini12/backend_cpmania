@@ -14,5 +14,8 @@
     "mongoose": "^7.4.0",
     "pretty": "^2.0.0",
     "serverless": "^3.33.0"
+  },
+  "engines": {
+    "node": ">=14.20.1"
   }
 }

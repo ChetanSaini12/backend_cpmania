@@ -33,8 +33,8 @@ app.use("/", router);
 // });
 
 
-const PORT = process.env.PORT || 7000;
-const MONGO_URI = process.env.MONGO_STRING || 'mongodb+srv://chetansaini1241:chetanMONGODB12@initialcluster.k3w73hx.mongodb.net/Students?retryWrites=true&w=majority';
+const PORT = process.env.PORT;
+const MONGO_URI = process.env.MONGO_STRING;
 
 mongoose
   .connect(MONGO_URI, {
